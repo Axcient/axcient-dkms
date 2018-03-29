@@ -1,4 +1,4 @@
-ARG tag="ubuntu:precise"
+ARG tag="ubuntu:trusty"
 FROM ${tag}
 
 # Set locale to fix character encoding
@@ -31,32 +31,40 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /build
 
 # Versions to download and build
-ARG e1000e="3.4.0.2"
-ARG ixgbe="5.3.6"
+ENV e1000e_version "3.4.0.2"
+ENV ixgbe_version "5.3.6"
 
 # Download folders will probably have to be updated when versions are incremented
-RUN wget https://downloadmirror.intel.com/15817/eng/e1000e-${e1000e}.tar.gz
-RUN wget https://downloadmirror.intel.com/14687/eng/ixgbe-${ixgbe}.tar.gz
+RUN wget https://downloadmirror.intel.com/15817/eng/e1000e-${e1000e_version}.tar.gz
+RUN wget https://downloadmirror.intel.com/14687/eng/ixgbe-${ixgbe_version}.tar.gz
 
-RUN tar xf e1000e-${e1000e}.tar.gz -C /usr/src/
-RUN tar xf ixgbe-${ixgbe}.tar.gz -C /usr/src/
+RUN tar xf e1000e-${e1000e_version}.tar.gz -C /usr/src/
+RUN tar xf ixgbe-${ixgbe_version}.tar.gz -C /usr/src/
 RUN rm *.tar.gz
 
 # Build e1000e
-COPY dkms_e1000e.conf /usr/src/e1000e-${e1000e}/dkms.conf
-RUN dkms add -m e1000e -v ${e1000e}
+ENV e1000e_conf /usr/src/e1000e-${e1000e_version}/dkms.conf
+COPY dkms.conf.template ${e1000e_conf}
+RUN sed -i "s/__PACKAGE__/e1000e/g" ${e1000e_conf}
+RUN sed -i "s/__VERSION__/${e1000e_version}/g" ${e1000e_conf}
+
+RUN dkms add -m e1000e -v ${e1000e_version}
 # Don't build any binaries for now
-#RUN dkms build -m e1000e -v ${e1000e}
-#RUN dkms mkdeb -m e1000e -v ${e1000e}
-RUN dkms mkdeb --source-only -m e1000e -v ${e1000e}
+#RUN dkms build -m e1000e -v ${e1000e_version}
+#RUN dkms mkdeb -m e1000e -v ${e1000e_version}
+RUN dkms mkdeb --source-only -m e1000e -v ${e1000e_version}
 
 # Build ixgbe
-COPY dkms_ixgbe.conf /usr/src/ixgbe-${ixgbe}/dkms.conf
-RUN dkms add -m ixgbe -v ${ixgbe}
+ENV ixgbe_conf /usr/src/ixgbe-${ixgbe_version}/dkms.conf
+COPY dkms.conf.template ${ixgbe_conf}
+RUN sed -i "s/__PACKAGE__/ixgbe/g" ${ixgbe_conf}
+RUN sed -i "s/__VERSION__/${ixgbe_version}/g" ${ixgbe_conf}
+
+RUN dkms add -m ixgbe -v ${ixgbe_version}
 # Don't build any binaries for now
-#RUN dkms build -m ixgbe -v ${ixgbe}
-#RUN dkms mkdeb -m ixgbe -v ${ixgbe}
-RUN dkms mkdeb --source-only -m ixgbe -v ${ixgbe}
+#RUN dkms build -m ixgbe -v ${ixgbe_version}
+#RUN dkms mkdeb -m ixgbe -v ${ixgbe_version}
+RUN dkms mkdeb --source-only -m ixgbe -v ${ixgbe_version}
 
 RUN cp /var/lib/dkms/*/*/deb/* /build/
 

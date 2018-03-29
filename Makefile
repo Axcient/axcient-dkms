@@ -1,18 +1,16 @@
 OUTPUT_DIR := $(CURDIR)/output
 
-.PHONY: build clean
+.PHONY: build build-% clean
+
+build: clean
+	$(CURDIR)/build.sh trusty
+
+build-precise: clean
+	$(CURDIR)/build.sh precise
 
 clean:
-	@rm -rf $(OUTPUT_DIR)/*
-
-build:
-	@$(MAKE) clean
-	@$(CURDIR)/build.sh precise
-
-build-trusty:
-	@$(MAKE) clean
-	@$(CURDIR)/build.sh trusty
+	rm -rf $(OUTPUT_DIR)/*
 
 #deploy:
-#	@$(CURDIR)/deploy.sh
+#	$(CURDIR)/deploy.sh
 
