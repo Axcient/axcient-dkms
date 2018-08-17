@@ -1,4 +1,4 @@
-# Build DKMS packages for ixgbe and e100e drivers
+# Build DKMS packages for ixgbe, e100e, and mpt3sas drivers
 
 Use Docker to help build debianized DKMS drivers
 
@@ -7,10 +7,10 @@ Use Docker to help build debianized DKMS drivers
 ## General
 
 ```sh
-# build for precise by default
+# build for Trusty by default
 make build
-# build for trusty
-make build-trusty
+# build for precise
+make build-precise
 ```
 
 All packages built in the docker container will appear in the `output` directory.
