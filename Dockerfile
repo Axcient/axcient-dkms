@@ -32,7 +32,7 @@ WORKDIR /build
 
 # Versions to download and build
 ENV e1000e_version "3.4.0.2"
-ENV ixgbe_version "5.3.6"
+ENV ixgbe_version "5.3.7"
 
 # Download folders will probably have to be updated when versions are incremented
 RUN wget https://downloadmirror.intel.com/15817/eng/e1000e-${e1000e_version}.tar.gz
