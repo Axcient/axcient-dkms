@@ -3,6 +3,7 @@ PACKAGE_VERSION="__VERSION__"
 CLEAN="./clean.sh"
 MAKE="make -C $kernel_source_dir M=/usr/src/__PACKAGE__-__VERSION__"
 BUILT_MODULE_NAME="__PACKAGE__"
+BUILT_MODULE_LOCATION="../source"
 DEST_MODULE_LOCATION=/kernel/drivers/scsi/mpt3sas/
 AUTOINSTALL="yes"
 REMAKE_INITRD=yes
